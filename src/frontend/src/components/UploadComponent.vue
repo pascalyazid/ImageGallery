@@ -1,37 +1,36 @@
 <template>
-<div>
-  <section class="form">
-    <div class="field">
-      <label class="label">Name</label>
-      <div class="control">
-        <input v-model="form.desc" class="input" type="text" placeholder="Name">
+  <main>
+    <form
+        action="/api/images/upload"
+        method="POST"
+        enctype="multipart/form-data">
+      <div class="form-control">
+        <label>Description</label>
+        <input type="text" v-model="form.desc" name="desc" id="name" placeholder="Description">
       </div>
-    </div>
-    <div class="field">
-      <label class="label">File</label>
-      <div class="control">
-        <input v-model="form.fili" class="input" type="file" placeholder="File">
+      <div class="form-control">
+        <label>File</label>
+        <input type="file" v-on:change="handelFile" name="file" id="file">
       </div>
-    </div>
-    <div class="field">
-      <label class="label">Date</label>
-      <div class="control">
-        <input v-model="form.date" class="input" type="date">
+      <div class="form-control">
+        <label>Date</label>
+        <input type="date" v-model="form.date" name="date" id="date">
       </div>
-    </div>
-    <div class="field">
-      <div class="control">
+      <div class="form-control">
         <input type="submit" value="Upload">
       </div>
-    </div>
-  </section>
-</div>
+    </form>
+  </main>
+
+
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "UploadComponent",
-  props:{},
+  props: {},
   data: () => ({
     form: {
       desc: '',
@@ -39,26 +38,31 @@ export default {
       date: '',
     }
   }),
-  methods : {
-    upload () {
-      const payload = new FormData(this.form)
-      fetch('/api/images/upload', {
-        method: 'POST',
-        body: payload
+  methods: {
+    upload(e) {
+      e.preventDefault();
+      let formData = new FormData();
+      formData.append('file', this.form.file);
+      formData.append('desc', this.form.desc);
+      formData.append('date', this.form.date);
+      axios.post('/api/images/upload', formData, {
+        headers: {
+          'Content-Type' : 'multipart/form-data'
+        }
       })
-          .then(function (response) {
-            if(response.status == 409) {
-              alert("Image already exists");
-            }
-            if (!response.ok) {
-              alert("Invalid input");
-            } else {
-              alert("Image saved");
-            }
+          .then((response) => {
+            console.log(response)
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch((error) => {
+            console.log(error)
+          })
+          .finally(() => {
+            console.log("lol")
+          })
+    },
+    handelFile ( event ) {
+      this.form.file = event.target.files[0];
+      console.log(this.form)
     }
   }
 }

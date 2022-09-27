@@ -21,6 +21,7 @@ public class Image {
 
     @NotEmpty
     @Size(min = 1, max = 200)
+    @Pattern(regexp = "^[a-zA-Z0-9_ ]*$")
     private String desc;
 
     @NotBlank

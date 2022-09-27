@@ -95,7 +95,10 @@ public class ImageController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<String> uploadImageFile(@RequestParam("file") MultipartFile file, @RequestParam("desc") String desc, @RequestParam("date") String date) throws IOException {
+    public @ResponseBody ResponseEntity<String> uploadImageFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("desc") String desc,
+            @RequestParam("date") String date) throws IOException {
 
         if (DataHandler.writeFile(file)) {
             Image image = new Image(file.getOriginalFilename(), desc, date);
