@@ -16,6 +16,11 @@
       <div class="form-control">
         <input type="submit" value="Upload">
       </div>
+      <div class="message">
+        <p v-on:change="message">
+          {{ message }}
+        </p>
+      </div>
     </form>
   </main>
 
@@ -24,6 +29,7 @@
 
 <script>
 import axios from "axios";
+import App from "@/App";
 
 export default {
   name: "UploadComponent",
@@ -34,7 +40,8 @@ export default {
       desc: '',
       path: '',
       date: '',
-    }
+    },
+    message: ''
   }),
   methods: {
     upload(e) {
@@ -50,7 +57,15 @@ export default {
         }
       })
           .then((response) => {
-            console.log(response)
+            if(response.status == 400) {
+              this.message = "Invalid Input"
+            }
+            if(response.status == 409) {
+              this.message = "Image already exists"
+            }
+            if(response.status == 200) {
+              this.$root.togg
+            }
           })
           .catch((error) => {
             console.log(error)

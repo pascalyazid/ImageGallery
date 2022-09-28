@@ -106,7 +106,7 @@ public class ImageController {
         System.out.println(image);
         List<Image> images = DataHandler.getImages();
 
-        if (!images.stream().anyMatch(image1 -> image1.getPath().equals(image.getPath()))) {
+        if (!images.stream().anyMatch(image1 -> image1.getPath().equals(image.getPath())) || images.size() == 0) {
             images.add(image);
             DataHandler.writeImages(images);
             if (DataHandler.writeFile(file)) {
