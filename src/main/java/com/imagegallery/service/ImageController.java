@@ -1,14 +1,18 @@
 package com.imagegallery.service;
 
+import com.imagegallery.ImageGalleryApplication;
 import com.imagegallery.data.DataHandler;
 import com.imagegallery.model.Image;
 import com.imagegallery.util.ImageNotFoundException;
+import com.imagegallery.util.PathPatternConstraint;
 import org.apache.commons.io.IOUtils;
+import org.apache.juli.logging.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
@@ -22,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/images")
@@ -97,22 +102,22 @@ public class ImageController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> uploadImageFile(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("desc") String desc,
-            @RequestParam("date") String date) throws IOException {
+            @Valid @BeanParam Image image) throws IOException {
+        System.out.println(image);
+        List<Image> images = DataHandler.getImages();
 
-        if (DataHandler.writeFile(file)) {
-            Image image = new Image(file.getOriginalFilename(), desc, date);
-            List<Image> images = DataHandler.getImages();
-            if (!images.stream().anyMatch(image1 -> image1.getPath().equals(image.getPath()))) {
-                images.add(image);
-                DataHandler.writeImages(images);
+        if (!images.stream().anyMatch(image1 -> image1.getPath().equals(image.getPath()))) {
+            images.add(image);
+            DataHandler.writeImages(images);
+            if (DataHandler.writeFile(file)) {
                 return new ResponseEntity<String>("File saved", HttpStatus.OK);
             } else {
-                return new ResponseEntity<String>("Image already exists", HttpStatus.CONFLICT);
+                return new ResponseEntity<String>("File couldn't be saved", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<String>("File couldn't be saved", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Image already exists", HttpStatus.CONFLICT);
         }
+
     }
 
     @RequestMapping(value = "/load", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)

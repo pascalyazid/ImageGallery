@@ -1,9 +1,6 @@
 <template>
   <main>
-    <form
-        action="/api/images/upload"
-        method="POST"
-        enctype="multipart/form-data">
+    <form v-on:submit.prevent="upload">
       <div class="form-control">
         <label>Description</label>
         <input type="text" v-model="form.desc" name="desc" id="name" placeholder="Description">
@@ -32,9 +29,10 @@ export default {
   name: "UploadComponent",
   props: {},
   data: () => ({
+    file: '',
     form: {
       desc: '',
-      file: '',
+      path: '',
       date: '',
     }
   }),
@@ -42,8 +40,9 @@ export default {
     upload(e) {
       e.preventDefault();
       let formData = new FormData();
-      formData.append('file', this.form.file);
+      formData.append('file', this.file);
       formData.append('desc', this.form.desc);
+      formData.append('path', this.form.path);
       formData.append('date', this.form.date);
       axios.post('/api/images/upload', formData, {
         headers: {
@@ -61,7 +60,8 @@ export default {
           })
     },
     handelFile ( event ) {
-      this.form.file = event.target.files[0];
+      this.file = event.target.files[0];
+      this.form.path= event.target.files[0]['name'];
       console.log(this.form)
     }
   }
