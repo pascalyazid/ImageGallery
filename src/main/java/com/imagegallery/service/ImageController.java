@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/images")
@@ -89,7 +88,6 @@ public class ImageController {
 
             if (images.remove(image) && Files.deleteIfExists(Paths.get(Config.getProperty("images") + "/" + image.getPath()))) {
                 DataHandler.writeImages(images);
-
                 return new ResponseEntity<String>("Image deleted", HttpStatus.OK);
             } else {
                 return new ResponseEntity<String>("Image not found", HttpStatus.NOT_FOUND);
@@ -126,8 +124,8 @@ public class ImageController {
         if (images.stream().anyMatch(image -> image.getId().equals(id))) {
             Image image = images.stream().filter(image1 -> image1.getId().equals(id)).findFirst().orElseThrow(() -> new ImageNotFoundException(id));
             String path = Config.getProperty("images") + "/" + image.getPath();
-            System.out.println(path);
-            InputStream fis = new FileInputStream(Config.getProperty("images") + "/" + image.getPath());
+            System.out.println(image.getPath());
+            InputStream fis = new FileInputStream(image.getPath());
 
             return IOUtils.toByteArray(fis);
 

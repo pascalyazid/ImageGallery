@@ -29,7 +29,6 @@
 
 <script>
 import axios from "axios";
-import App from "@/App";
 
 export default {
   name: "UploadComponent",
@@ -57,18 +56,18 @@ export default {
         }
       })
           .then((response) => {
-            if(response.status == 400) {
-              this.message = "Invalid Input"
-            }
-            if(response.status == 409) {
-              this.message = "Image already exists"
-            }
+
             if(response.status == 200) {
-              this.$root.togg
+              this.message = "Image saved"
             }
           })
           .catch((error) => {
-            console.log(error)
+            if(error.response.status == 400) {
+              this.message = "Invalid Input"
+            }
+            if(error.response.status == 409) {
+              this.message = "Image already exists"
+            }
           })
           .finally(() => {
             console.log("lol")
