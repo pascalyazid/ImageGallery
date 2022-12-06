@@ -125,7 +125,7 @@ public class ImageController {
             Image image = images.stream().filter(image1 -> image1.getId().equals(id)).findFirst().orElseThrow(() -> new ImageNotFoundException(id));
             String path = Config.getProperty("images") + "/" + image.getPath();
             System.out.println(image.getPath());
-            InputStream fis = new FileInputStream(image.getPath());
+            InputStream fis = new FileInputStream(path);
 
             return IOUtils.toByteArray(fis);
 
