@@ -23,8 +23,6 @@
       </div>
     </form>
   </main>
-
-
 </template>
 
 <script>
@@ -52,36 +50,34 @@ export default {
       formData.append('date', this.form.date);
       axios.post('/api/images/upload', formData, {
         headers: {
-          'Content-Type' : 'multipart/form-data'
+          'Content-Type': 'multipart/form-data'
         }
       })
-          .then((response) => {
+        .then((response) => {
 
-            if(response.status == 200) {
-              this.message = "Image saved"
-            }
-          })
-          .catch((error) => {
-            if(error.response.status == 400) {
-              this.message = "Invalid Input"
-            }
-            if(error.response.status == 409) {
-              this.message = "Image already exists"
-            }
-          })
-          .finally(() => {
-            console.log("lol")
-          })
+          if (response.status == 200) {
+            this.message = "Image saved"
+          }
+        })
+        .catch((error) => {
+          if (error.response.status == 400) {
+            this.message = "Invalid Input"
+          }
+          if (error.response.status == 409) {
+            this.message = "Image already exists"
+          }
+        })
+        .finally(() => {
+          console.log("lol")
+        })
     },
-    handelFile ( event ) {
+    handelFile(event) {
       this.file = event.target.files[0];
-      this.form.path= event.target.files[0]['name'];
+      this.form.path = event.target.files[0]['name'];
       console.log(this.form)
     }
   }
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
